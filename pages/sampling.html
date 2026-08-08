@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дискретизація — Orion</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 sidebar">
+                <div class="sidebar-header p-3">
+                    <h4>✦ ORION</h4>
+                    <small>Теорія ЦОС</small>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Вступ до ЦОС</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="sampling.html">Дискретизація</a></li>
+                    <li class="nav-item"><a class="nav-link" href="fft.html">Спектральний аналіз</a></li>
+                    <li class="nav-item"><a class="nav-link" href="filters.html">Цифрова фільтрація</a></li>
+                    <li class="nav-item"><a class="nav-link" href="effects.html">Гітарні ефекти</a></li>
+                </ul>
+            </nav>
+
+            <main class="col-md-9 col-lg-10 content p-4">
+                <section id="sampling">
+                    <h1>Дискретизація сигналу</h1>
+
+                    <p class="lead">
+                        Дискретизація — це процес перетворення неперервного аналогового
+                        сигналу на послідовність окремих значень (відліків), виміряних
+                        через рівні проміжки часу.
+                    </p>
+
+                    <h2>Частота дискретизації</h2>
+                    <p>
+                        Кількість вимірів за одну секунду називається частотою дискретизації
+                        $f_s$ (sampling rate), вимірюється в герцах. Чим вища частота
+                        дискретизації, тим точніше цифровий сигнал відтворює оригінал.
+                        Для музики стандартом є $f_s = 44100$ Гц — тобто 44100 вимірів
+                        щосекунди.
+                    </p>
+
+                    <h2>Теорема Котельникова (Найквіста)</h2>
+                    <p>
+                        Фундаментальний результат теорії ЦОС визначає, яка частота
+                        дискретизації є достатньою. Теорема стверджує: щоб точно відновити
+                        сигнал, частота дискретизації має бути щонайменше вдвічі більшою
+                        за найвищу частоту в сигналі.
+                    </p>
+
+                    <div class="formula-box">
+                        $$f_s \geq 2 \cdot f_{max}$$
+                        де $f_{max}$ — найвища частота в сигналі. Половина частоти
+                        дискретизації ($f_s / 2$) називається частотою Найквіста.
+                    </div>
+
+                    <p>
+                        Людське вухо чує приблизно до 20000 Гц. Саме тому обрано
+                        $f_s = 44100$ Гц — це трохи більше за подвоєну верхню межу слуху
+                        ($2 \times 20000 = 40000$), із запасом.
+                    </p>
+
+                    <h2>Накладання спектрів (aliasing)</h2>
+                    <p>
+                        Якщо частота дискретизації недостатня (менша за подвоєну частоту
+                        сигналу), виникає спотворення — накладання спектрів (aliasing).
+                        Високочастотний сигнал «маскується» під низькочастотний, і відновити
+                        оригінал стає неможливо. Саме тому перед дискретизацією застосовують
+                        фільтр низьких частот, який відсікає частоти вище за частоту Найквіста.
+                    </p>
+
+                    <h2>Інтерактивна демонстрація</h2>
+                    <p>
+                        Нижче показано, як неперервна синусоїда (світла лінія) перетворюється
+                        на дискретні відліки (точки). Змінюйте частоту дискретизації повзунком
+                        і спостерігайте, як змінюється точність представлення сигналу.
+                    </p>
+
+                    <div class="chart-container">
+                        <canvas id="samplingChart"></canvas>
+                        <div class="mt-3">
+                            <label for="sampleRateSlider">
+                                Кількість відліків: <span id="sampleRateValue">20</span>
+                            </label>
+                            <input type="range" class="form-range" id="sampleRateSlider"
+                                min="5" max="100" value="20">
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/sampling.js"></script>
+</body>
+</html>
