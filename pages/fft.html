@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дискретизація — Orion</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 sidebar">
+                <div class="sidebar-header p-3">
+                    <h4>✦ ORION</h4>
+                    <small>Теорія ЦОС</small>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Вступ до ЦОС</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sampling.html">Дискретизація</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="fft.html">Спектральний аналіз</a></li>
+                    <li class="nav-item"><a class="nav-link" href="filters.html">Цифрова фільтрація</a></li>
+                    <li class="nav-item"><a class="nav-link" href="effects.html">Гітарні ефекти</a></li>
+                </ul>
+            </nav>
+
+<main class="col-md-9 col-lg-10 content p-4">
+    <section id="fft">
+        <h1>Спектральний аналіз сигналу</h1>
+
+        <p class="lead">
+            Спектральний аналіз дозволяє подивитися на сигнал не як на зміну
+            амплітуди в часі, а як на набір частот, з яких він складається.
+            Це один з фундаментальних інструментів цифрової обробки сигналів.
+        </p>
+
+        <h2>Ідея розкладання на частоти</h2>
+        <p>
+            Ключова ідея, сформульована ще на початку XIX століття Жаном-Батистом
+            Фур'є: будь-який складний періодичний сигнал можна подати як суму
+            простих синусоїд різних частот, амплітуд та фаз. Наприклад, звук
+            гітарної струни — це не одна частота, а основний тон (fundamental)
+            плюс набір гармонік — частот, кратних основній.
+        </p>
+
+        <h2>Перетворення Фур'є</h2>
+        <p>
+            Математичний інструмент, який переводить сигнал з часової області
+            у частотну, називається перетворенням Фур'є. Для дискретного
+            сигналу використовується дискретне перетворення Фур'є (ДПФ):
+        </p>
+
+        <div class="formula-box">
+            $$X_k = \sum_{n=0}^{N-1} x_n \cdot e^{-i 2\pi k n / N}$$
+            де $x_n$ — відліки сигналу, $X_k$ — комплексні коефіцієнти,
+            що описують амплітуду та фазу кожної частотної складової,
+            $N$ — кількість відліків.
+        </div>
+
+        <h2>Швидке перетворення Фур'є (ШПФ)</h2>
+        <p>
+            Пряме обчислення ДПФ вимагає $N^2$ операцій, що для великих сигналів
+            надто повільно. Алгоритм швидкого перетворення Фур'є (ШПФ, FFT),
+            запропонований Кулі та Тьюкі у 1965 році, зменшує складність до
+            $N \log N$ операцій. Саме ШПФ використовується у застосунку Orion
+            для побудови спектра в реальному часі.
+        </p>
+
+        <div class="formula-box">
+            Порівняння складності для $N = 2048$:<br>
+            ДПФ: $N^2 \approx 4\,000\,000$ операцій<br>
+            ШПФ: $N \log_2 N \approx 22\,000$ операцій<br>
+            Прискорення приблизно у 180 разів.
+        </div>
+
+        <h2>Віконні функції</h2>
+        <p>
+            На практиці ШПФ застосовують до коротких фрагментів сигналу. Різке
+            «обрізання» фрагмента створює хибні частоти у спектрі — явище,
+            відоме як спектральне розмиття (leakage). Щоб його зменшити,
+            фрагмент множать на віконну функцію — плавну криву, що згладжує краї.
+            У Orion використовується вікно Ганна:
+        </p>
+
+        <div class="formula-box">
+            $$w(n) = 0.5 \left(1 - \cos\frac{2\pi n}{N-1}\right)$$
+        </div>
+
+        <h2>Інтерактивна демонстрація</h2>
+        <p>
+            Зліва — сигнал у часовій області, утворений сумою трьох гармонік.
+            Справа — його спектр (амплітуди кожної гармоніки). Змінюйте амплітуди
+            гармонік повзунками і спостерігайте, як змінюється форма сигналу
+            та його спектр.
+        </p>
+
+        <div class="chart-container">
+            <div class="row">
+                <div class="col-md-6">
+                    <canvas id="timeChart"></canvas>
+                    <p class="text-center mt-2"><small>Часова область</small></p>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="freqChart"></canvas>
+                    <p class="text-center mt-2"><small>Частотна область (спектр)</small></p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label>1-а гармоніка (основний тон): <span id="h1Value">1.0</span></label>
+                <input type="range" class="form-range" id="h1Slider" min="0" max="100" value="100">
+
+                <label>2-а гармоніка: <span id="h2Value">0.5</span></label>
+                <input type="range" class="form-range" id="h2Slider" min="0" max="100" value="50">
+
+                <label>3-я гармоніка: <span id="h3Value">0.3</span></label>
+                <input type="range" class="form-range" id="h3Slider" min="0" max="100" value="30">
+            </div>
+        </div>
+    </section>
+</main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/fft.js"></script>
+</body>
+</html>
