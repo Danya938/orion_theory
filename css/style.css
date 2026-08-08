@@ -1,0 +1,75 @@
+:root {
+    --bg-deep: #0B0E1A;
+    --bg-night: #151B2E;
+    --bg-panel: #1C2540;
+    --text-star: #C5CDE0;
+    --accent-blue: #4A9EFF;
+    --accent-orange: #FF6B4A;
+    --star-gold: #FFD98A;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-deep);
+    color: var(--text-star);
+}
+
+.sidebar {
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    background: var(--bg-night);
+    border-right: 1px solid var(--bg-panel);
+}
+
+.sidebar-header h4 {
+    color: var(--star-gold);
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.sidebar-header small {
+    color: var(--accent-blue);
+}
+
+.sidebar .nav-link {
+    color: var(--text-star);
+    padding: 0.6rem 1.2rem;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(74, 158, 255, 0.08);
+    color: #fff;
+}
+
+.sidebar .nav-link.active {
+    color: #fff;
+    border-left-color: var(--accent-blue);
+    background: rgba(74, 158, 255, 0.12);
+}
+
+.content {
+    max-width: 900px;
+}
+
+.content h1 {
+    color: var(--accent-blue);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--bg-panel);
+}
+
+.content h2 {
+    color: var(--star-gold);
+    margin-top: 2rem;
+}
+
+.formula-box {
+    background: var(--bg-night);
+    border-left: 4px solid var(--accent-orange);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+}
