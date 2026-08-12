@@ -1,3 +1,9 @@
+/*
+ * Orion — Теорія ЦОС
+ * Автор: Bondarenko Daniil
+ * Випускний проєкт, 2026
+ */
+
 :root {
     --bg-deep: #0B0E1A;
     --bg-night: #151B2E;
@@ -84,4 +90,11 @@ body {
 
 .chart-container canvas {
     max-height: 400px;
+}
+
+.site-footer {
+    border-top: 1px solid var(--bg-panel);
+    color: #5A6478;
+    text-align: center;
+    padding-bottom: 2rem;
 }
