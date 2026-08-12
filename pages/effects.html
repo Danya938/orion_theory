@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дискретизація — Orion</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-3 col-lg-2 sidebar">
+                <div class="sidebar-header p-3">
+                    <h4>✦ ORION</h4>
+                    <small>Теорія ЦОС</small>
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Вступ до ЦОС</a></li>
+                    <li class="nav-item"><a class="nav-link" href="sampling.html">Дискретизація</a></li>
+                    <li class="nav-item"><a class="nav-link" href="fft.html">Спектральний аналіз</a></li>
+                    <li class="nav-item"><a class="nav-link" href="filters.html">Цифрова фільтрація</a></li>
+                    <li class="nav-item"><a class="nav-link effects" href="effects.html">Гітарні ефекти</a></li>
+                </ul>
+            </nav>
+
+            <main class="col-md-9 col-lg-10 content p-4">
+    <section id="effects">
+        <h1>Гітарні ефекти як алгоритми ЦОС</h1>
+
+        <p class="lead">
+            Кожен ефект у застосунку Orion — це конкретна математична операція
+            над потоком цифрових відліків. У цьому розділі розглянуто реалізовані
+            ефекти та алгоритми, що лежать в їх основі.
+        </p>
+
+        <h2>Дисторшн (Distortion)</h2>
+        <p>
+            Дисторшн створює характерне «брудне» звучання шляхом нелінійного
+            спотворення сигналу. У Orion використовується м'яке насичення через
+            функцію гіперболічного тангенса. При малих значеннях сигнал майже
+            не змінюється, при великих — «сплющується» до меж діапазону,
+            породжуючи багато гармонік.
+        </p>
+
+        <div class="formula-box">
+            $$y[n] = \tanh(g \cdot x[n]) \cdot v$$
+            де $g$ — коефіцієнт підсилення (gain), $v$ — компенсація гучності.
+        </div>
+
+        <h2>Дилей (Delay)</h2>
+        <p>
+            Дилей створює ефект відлуння: сигнал повторюється через заданий
+            проміжок часу. Реалізується через кільцевий буфер, з якого зчитується
+            затриманий сигнал. Коефіцієнт зворотного зв'язку визначає, скільки
+            повторів буде чутно.
+        </p>
+
+        <div class="formula-box">
+            $$y[n] = x[n] + f \cdot x[n - D]$$
+            де $D$ — затримка у відліках, $f$ — коефіцієнт зворотного зв'язку.
+        </div>
+
+        <h2>Реверберація (Reverb)</h2>
+        <p>
+            Реверберація імітує звучання приміщення — множину відбиттів звуку
+            від поверхонь. У Orion реалізовано спрощену схему на основі
+            гребінчастого фільтра з фільтром низьких частот у петлі зворотного
+            зв'язку, що імітує згасання високих частот у реальному просторі.
+            Повна схема Шредера з паралельними гребінчастими та каскадними
+            all-pass фільтрами розглядається як напрямок майбутнього розвитку.
+        </p>
+
+        <h2>Тремоло (Tremolo)</h2>
+        <p>
+            Тремоло — це періодична зміна гучності сигналу за законом синусоїди
+            (низькочастотний осцилятор, LFO). Створює ефект «пульсації» звуку,
+            характерний для серф-музики та блюзу.
+        </p>
+
+        <div class="formula-box">
+            $$y[n] = x[n] \cdot \left(1 - d + d \cdot \sin(2\pi f_{LFO} \cdot n / f_s)\right)$$
+            де $f_{LFO}$ — частота модуляції, $d$ — глибина ефекту.
+        </div>
+
+        <h2>Вібрато (Vibrato)</h2>
+        <p>
+            Вібрато модулює не гучність, а висоту тону — через змінну затримку,
+            керовану LFO. Для плавності застосовується лінійна інтерполяція між
+            сусідніми відліками буфера. Створює ефект «плавання» звуку.
+        </p>
+
+        <h2>Кільцевий модулятор (Ring Modulator)</h2>
+        <p>
+            Кільцевий модулятор перемножує сигнал із синусоїдою фіксованої
+            частоти, створюючи характерний «металевий», «роботизований» тембр.
+        </p>
+
+        <div class="formula-box">
+            $$y[n] = x[n] \cdot \left(1 + d \cdot \sin(2\pi f_m \cdot n / f_s)\right)$$
+            де $f_m$ — частота модулятора, $d$ — глибина.
+        </div>
+
+        <h2>Ланцюг ефектів</h2>
+        <p>
+            Ефекти застосовуються послідовно, утворюючи сигнальний ланцюг
+            (signal chain). Порядок ефектів впливає на результат: наприклад,
+            дисторшн перед реверберацією та реверберація перед дисторшном дають
+            різне звучання. Архітектура Orion дозволяє гнучко вмикати та
+            вимикати кожен ефект незалежно.
+        </p>
+
+        <h2>Демонстрація: дисторшн і гармоніки</h2>
+        <p>
+            Нижче показано, як функція $\tanh$ спотворює синусоїду. При збільшенні
+            підсилення чиста синусоїда перетворюється на майже прямокутну хвилю —
+            саме поява нових гармонік і дає характерне звучання дисторшна.
+        </p>
+
+        <div class="chart-container">
+            <canvas id="distortionChart"></canvas>
+            <div class="mt-3">
+                <label for="gainSlider">
+                    Підсилення (gain): <span id="gainValue">1</span>
+                </label>
+                <input type="range" class="form-range" id="gainSlider"
+                    min="1" max="30" value="1">
+            </div>
+        </div>
+    </section>
+</main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/effects.js"></script>
+</body>
+</html>
