@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             responsive: true,
             scales: {
                 x: { title: { display: true, text: 'Номер гармоніки', color: '#C5CDE0' },
-                     ticks: { color: '#C5CDE0' }, grid: { color: 'rgba(197,205,224,0.1)' } },
+                    ticks: { color: '#C5CDE0' }, grid: { color: 'rgba(197,205,224,0.1)' } },
                 y: { min: 0, max: 1.2, ticks: { color: '#C5CDE0' }, grid: { color: 'rgba(197,205,224,0.1)' } }
             },
             plugins: { legend: { display: false } }
